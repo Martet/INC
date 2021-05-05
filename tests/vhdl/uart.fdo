@@ -1,0 +1,17 @@
+vlib work
+vdel -lib work -all
+vlib work
+
+vcom -work work ../uart_fsm.vhd
+vcom -work work ../uart.vhd
+vcom -work work uart_tb.vhd
+
+# Starting simulation
+vsim -t 1ps -novopt -lib work testbench
+
+# Suppress warnings from arithm library
+puts "Std Arith Warnings - Disabled"
+set  StdArithNoWarnings 1
+
+run 10 ms
+exit
