@@ -28,25 +28,24 @@ signal LAST_CONFIRM : std_logic := '0';
 begin
 
 RD_EN <= '1' when STATE = DATA else '0';
-CNT_EN <= '0' when STATE = WAITING or STATE = CONFIRM else '0'; 
+CNT_EN <= '0' when STATE = WAITING or STATE = CONFIRM else '1'; 
 
 process (CLK) begin
    if rising_edge(CLK) then
       if RST = '1' then
          STATE <= WAITING;
       else
-           --report integer'image(to_integer(unsigned(STATE)));
          case STATE is
             when WAITING => if DIN = '0' then
                STATE <= WAIT_FIRST;
                end if;
-            when WAIT_FIRST => if CNT_START = "01000" then
+            when WAIT_FIRST => if CNT_START(4) = '1' then
                STATE <= DATA;
                end if;
-            when DATA => if CNT_DATA = "1000" then
+            when DATA => if CNT_DATA(3) = '1' then
                STATE <= WAIT_LAST;
                end if;
-            when WAIT_LAST => if DIN = '0' then
+            when WAIT_LAST => if DIN = '1' then
                STATE <= CONFIRM;
                end if;
             when CONFIRM => if LAST_CONFIRM = '0' then
